@@ -1,0 +1,50 @@
+.welcome-card ion-img {
+  max-height: 35vh;
+  overflow: hidden;
+}
+
+  #titulo1{
+    color: #663BC9;
+    font-family: RobotoBold;
+  }
+  #titulo2{
+    color: white;
+    font-family: RobotoLight;
+  }
+
+  #TitSegment{
+    font-family: RobotoBold;
+  }
+
+.buttonCard{
+  font-size: 20px;
+  background: transparent !important;
+}
+  #iconoLike{
+    color: #663BC9;
+  }
+
+ion-slide.swiper-slide {
+    display:block;
+}
+.slides{
+    height: 100%;
+}
+
+/* la "rayita" que indica la navegación entre slides */
+.SwipedTabs-indicatorSegment{
+  -webkit-transition: 0s all;
+  -moz-transition:  0s all;
+  -o-transition:  0s all;
+  transition:  0s all;
+  transform-origin: top 0 left 0;
+  height: 3px;
+  position: relative;
+  top: -2px;
+  background-color: var(--ion-color-tertiary) !important;
+}
+ 
+
+
+
+  
