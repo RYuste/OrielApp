@@ -7,6 +7,20 @@
       Oriel<span id="titulo2">App</span>
     </ion-title>
   </ion-toolbar>
+
+  <ion-fab vertical="bottom" horizontal="end" edge slot="fixed">
+    <ion-fab-button mini color="tertiary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  <ion-fab-list side="bottom">
+    <ion-fab-button mini color="tertiary">
+      <ion-icon name="camera"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button mini color="tertiary">
+      <ion-icon name="images"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+  </ion-fab> 
 </ion-header>
 
 <ion-content>
@@ -14,7 +28,31 @@
   (ionSlideWillChange)="updateIndicatorPosition()" (ionSlideDidChange)="updateIndicatorPosition()" #SwipedTabsSlider
   (ionSlideDrag)="animateIndicator($event)">
     <!-- INICIO -->
-    <ion-slide>
+    <ion-slide style="overflow-y:scroll">
+      <ion-card>
+        <ion-card-content>
+          <ion-card-title text-left>
+            Imágen ejemplo
+          </ion-card-title>
+        </ion-card-content>
+
+        <img src="assets/images/eva01-dibu.png" />
+
+        <ion-row>
+          <ion-col text-center>
+            <button class="buttonCard" ion-button (click)="meGusta()">
+              <ion-icon name="thumbs-up" *ngIf="!visible"></ion-icon> 
+              <ion-icon id="iconoLike" name="thumbs-up" *ngIf="visible"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col text-center>
+            <button class="buttonCard" ion-button>
+              <ion-icon name="share"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+
       <ion-card>
         <ion-card-content>
           <ion-card-title text-left>
@@ -41,7 +79,7 @@
     </ion-slide>
 
     <!-- FAVORITOS -->
-    <ion-slide>
+    <ion-slide style="overflow-y:scroll">
         dfhdfgh
     </ion-slide>
   </ion-slides>
@@ -76,13 +114,12 @@
         <ion-label>Theme Your App</ion-label>
       </ion-item>
     </ion-list>-->
-    
 </ion-content>
 
 <ion-footer>
   <ion-toolbar color="primary">
     <ion-segment [(ngModel)]="category" (ionChange)="slides.slideTo(category)" 
-      style="background-color:var(--ion-color-primary)" color="light">
+      style="background-color:var(--ion-color-primary)" color="black">
       <ion-segment-button layout="icon-start" value="0" style="--padding-end:0px;--padding-start:0px">
         <ion-icon name="md-images" style="margin-right:1px;zoom:0.8" color="tertiary"></ion-icon>
         <ion-label id="TitSegment">Inicio</ion-label>
