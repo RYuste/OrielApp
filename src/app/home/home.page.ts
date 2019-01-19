@@ -1,6 +1,9 @@
 import { Component,ViewChild} from '@angular/core';
 import { IonSlides, IonInfiniteScroll } from '@ionic/angular';
 
+import { ModelPage } from '../model/model.page';
+import { ModalController, NavParams } from '@ionic/angular';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -14,10 +17,25 @@ export class HomePage {
   private category: any = "0";
   private ntabs = 2;
   private SwipedTabsIndicator: any = null;
+  private image: any = null;
 
-  constructor() { }
+  constructor(public modalCtrl: ModalController) { }
 
   ngOnInit() {
+  }
+
+  // Abre un modal para añadir una imágen
+  async abrirModel(){
+    const modal = await this.modalCtrl.create({
+      component: ModelPage
+    });
+    // Al cerrar el modal actualiza el listado
+    modal.onDidDismiss().then(
+      () => {
+        this.ionViewDidEnter();
+      }
+    )
+    await modal.present();
   }
 
   meGusta(){

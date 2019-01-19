@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-title id="titulo">
+      Nueva Imágen
+    </ion-title>
+  </ion-toolbar>
+<ion-fab vertical="bottom" horizontal="end" edge slot="fixed">
+  <ion-fab-button mini color="primary">
+    <ion-icon md="md-arrow-dropdown"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="bottom">
+    <ion-fab-button mini color="primary" (click)="openCamera()">
+      <ion-icon name="camera"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button mini color="primary" (click)="openGallery()">
+      <ion-icon name="image"></ion-icon>
+    </ion-fab-button>
+  </ion-fab-list>
+</ion-fab>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="todo" (ngSubmit)="logForm()">
+    <ion-item>
+      <ion-input type="text" formControlName="title" placeholder="Introduce un título..."></ion-input>
+    </ion-item>
+    <br>
+    <div>
+      <!---<img [src]="image" *ngIf="myphoto" />-->
+      <!---<img ng-src="{{ image.src }}" style="width: 100%; text-align: center !important;"/>-->
+      <ion-img id="imagen" [src]="myphoto"></ion-img>
+    </div>
+    <br>
+    <br>
+    <ion-row>
+      <ion-col text-center>
+        <ion-button color="dark" (click)="cerrarModal()">CANCELAR</ion-button>
+        <ion-button color="primary" type="submit" [disabled]="!todo.valid">GUARDAR</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

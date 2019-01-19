@@ -9,17 +9,9 @@
   </ion-toolbar>
 
   <ion-fab vertical="bottom" horizontal="end" edge slot="fixed">
-    <ion-fab-button mini color="tertiary">
+    <ion-fab-button mini color="tertiary" (click)="abrirModel()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  <ion-fab-list side="bottom">
-    <ion-fab-button mini color="tertiary">
-      <ion-icon name="camera"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-button mini color="tertiary">
-      <ion-icon name="images"></ion-icon>
-    </ion-fab-button>
-  </ion-fab-list>
   </ion-fab> 
 </ion-header>
 
@@ -31,13 +23,11 @@
     <ion-slide style="overflow-y:scroll">
       <ion-card>
         <ion-card-content>
-          <ion-card-title text-left>
+          <ion-card-title text-left id="tituloCard">
             Imágen ejemplo
           </ion-card-title>
         </ion-card-content>
-
         <img src="assets/images/eva01-dibu.png" />
-
         <ion-row>
           <ion-col text-center>
             <button class="buttonCard" ion-button (click)="meGusta()">
