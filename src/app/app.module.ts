@@ -13,13 +13,19 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { ModelPage } from '../app/model/model.page'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { environment } from '../environments/environment';
+
 @NgModule({
   declarations: [AppComponent, ModelPage],
   entryComponents: [ModelPage],
   imports: [
-    BrowserModule,
+    BrowserModule, 
     IonicModule.forRoot(),
     AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
     FormsModule, ReactiveFormsModule
   ],
   providers: [

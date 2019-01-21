@@ -21,21 +21,19 @@
 
 <ion-content padding>
   <form [formGroup]="todo" (ngSubmit)="logForm()">
+    <br>
     <ion-item>
-      <ion-input type="text" formControlName="title" placeholder="Introduce un título..."></ion-input>
+      <ion-input type="text" formControlName="title" placeholder="Introduce un título..." maxlength="35"></ion-input>
     </ion-item>
     <br>
-    <div>
-      <!---<img [src]="image" *ngIf="myphoto" />-->
-      <!---<img ng-src="{{ image.src }}" style="width: 100%; text-align: center !important;"/>-->
-      <ion-img id="imagen" [src]="myphoto"></ion-img>
-    </div>
-    <br>
+    <ion-card class="contImg">
+      <ion-img #mifoto [src]="myphoto"></ion-img>
+    </ion-card>
     <br>
     <ion-row>
       <ion-col text-center>
-        <ion-button color="dark" (click)="cerrarModal()">CANCELAR</ion-button>
-        <ion-button color="primary" type="submit" [disabled]="!todo.valid">GUARDAR</ion-button>
+        <ion-button color="dark" id="btCancelar" (click)="cerrarModal()">CANCELAR</ion-button>
+        <ion-button color="primary" id="btGuardar" type="submit" [disabled]="!todo.valid">GUARDAR</ion-button>
       </ion-col>
     </ion-row>
   </form>

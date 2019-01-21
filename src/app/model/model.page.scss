@@ -2,8 +2,13 @@
         font-family: RobotoBold;
     }
 
-    #imagen{
-        width: 100%;
-        height: 200px;
-        background: rgb(190, 190, 190);
+    .contImg{
+        background: #663BC9;
+    }
+
+    #btCancelar{
+        margin-right: 10px;
+    }
+    #btGuardar{
+        margin-left: 10px;
     }
