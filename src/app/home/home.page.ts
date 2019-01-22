@@ -1,8 +1,9 @@
 import { Component,ViewChild} from '@angular/core';
-import { IonSlides, IonInfiniteScroll } from '@ionic/angular';
+import { IonSlides, LoadingController, IonInfiniteScroll } from '@ionic/angular';
 
 import { ModelPage } from '../model/model.page';
 import { ModalController, NavParams } from '@ionic/angular';
+import { TodoservicioService } from '../servicios/todoservicio.service';
 
 @Component({
   selector: 'app-home',
@@ -12,14 +13,19 @@ import { ModalController, NavParams } from '@ionic/angular';
 export class HomePage {
   @ViewChild('SwipedTabsSlider') SwipedTabsSlider: IonSlides;
 
+  private listado = [];
+  private listadoPanel = [];
+
   private visible = false;
   private tabs = ["selectTab(0)", "selectTab(1)"];
   private category: any = "0";
   private ntabs = 2;
   private SwipedTabsIndicator: any = null;
-  private image: any = null;
+  //private image: any = null;
 
-  constructor(public modalCtrl: ModalController) { }
+  constructor(public modalCtrl: ModalController,
+              private todoS: TodoservicioService,
+              public loadingController: LoadingController) { }
 
   ngOnInit() {
   }
@@ -42,13 +48,41 @@ export class HomePage {
     this.visible = !this.visible; 
   }
 
+  /* Se ejecuta cuando la página ha entrado completamente y ahora es la página activa. */
   ionViewDidEnter() {
     this.SwipedTabsIndicator = document.getElementById("indicator");
+    this.presentLoading("Cargando...");
+    this.todoS.leeDatos()
+      .subscribe((querySnapshot) => {
+        this.listado = [];
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          //console.log(doc.id, " => ", doc.data());
+          this.listado.push({ id: doc.id, ...doc.data() });
+        });
+        //console.log(this.listado);
+        this.listadoPanel = this.listado;
+        this.loadingController.dismiss();
+      });
   }
 
+  /* Componente Refresher de IONIC v4. Refresca los datos */
+  doRefresh(refresher) {
+    this.todoS.leeDatos()
+      .subscribe(querySnapshot => {
+        this.listado = [];
+        querySnapshot.forEach((doc) => {
+          this.listado.push({ id: doc.id, ...doc.data() });
+        });
+        this.listadoPanel = this.listado;
+        refresher.target.complete();
+      });
+  }
+
+  /* Se ejecuta cuando la página está a punto de entrar y convertirse en la página activa. */
   ionViewWillEnter() {
     this.category = "0";
-    this.SwipedTabsSlider.length().then(l => {  //no sería necesario aquí, solo en ngOnInit
+    this.SwipedTabsSlider.length().then(l => {
       this.ntabs = l;
     });
   }
@@ -67,5 +101,13 @@ export class HomePage {
     if (this.SwipedTabsIndicator)
       this.SwipedTabsIndicator.style.webkitTransform = 'translate3d(' +
         ((e.target.swiper.progress * (this.ntabs - 1)) * 100) + '%,0,0)';
+  }
+
+  /* Loading */
+  async presentLoading(msg) {
+    let myloading = await this.loadingController.create({
+      message: msg
+    });
+    return await myloading.present();
   }
 }

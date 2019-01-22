@@ -16,18 +16,33 @@
 </ion-header>
 
 <ion-content>
-  <ion-slides #slides (ionSlideTransitionStart)="updateIndicatorPosition();updateCat(slides.getActiveIndex())"
-  (ionSlideWillChange)="updateIndicatorPosition()" (ionSlideDidChange)="updateIndicatorPosition()" #SwipedTabsSlider
-  (ionSlideDrag)="animateIndicator($event)">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Arrastra para refrescar" refreshingSpinner="crescent"
+      refreshingText="Cargando...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-slides #slides (ionSlideTransitionStart)="updateIndicatorPosition();updateCat(slides.getActiveIndex())" (ionSlideWillChange)="updateIndicatorPosition()" (ionSlideDidChange)="updateIndicatorPosition()" #SwipedTabsSlider
+    (ionSlideDrag)="animateIndicator($event)">
     <!-- INICIO -->
     <ion-slide style="overflow-y:scroll">
       <ion-card>
-        <ion-card-content>
-          <ion-card-title text-left id="tituloCard">
-            Imágen ejemplo
+        <ion-card-content class="cardInicio">
+          <ion-card-title>
+            <u>Bienvenido a <span id="titulo1">Oriel</span><span id="titulo2">App</span></u>
+          </ion-card-title>
+          <span id="subCardInicio">Sube tus imágenes favoritas y guarda las de tus amigos, o vota de entre 
+          ellas las que más te guste. ¡Diviertete!</span>
+        </ion-card-content>
+      </ion-card>
+    
+      <ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;">
+        <ion-card-content><ion-card-title text-left id="tituloCard">
+            {{item.title}}
           </ion-card-title>
         </ion-card-content>
-        <img src="assets/images/eva01-dibu.png"/>
+        <div class="imgAMostrar">
+          <img id="imagenAMostrar" src="{{item.img}}"/>
+        </div>
         <ion-row>
           <ion-col text-center>
             <button class="buttonCard" ion-button (click)="meGusta()">

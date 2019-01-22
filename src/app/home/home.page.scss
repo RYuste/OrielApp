@@ -3,9 +3,26 @@
   overflow: hidden;
 }
 
+.cardInicio{
+  background: #FF9900; 
+  font-family: RobotoBold;
+}
+  #subCardInicio{
+    color: white;
+  }
+
 ion-card-title{
   font-size: 18px;
 }
+
+.imgAMostrar{
+  background-color: #663BC9;
+}
+  #imagenAMostrar{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
 
   #titulo1{
     color: #663BC9;
