@@ -17,6 +17,8 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from '../environments/environment';
 
+import { ThemeSwitcheService } from './servicios/theme-switche.service';
+
 @NgModule({
   declarations: [AppComponent, ModelPage],
   entryComponents: [ModelPage],
@@ -30,6 +32,7 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     StatusBar,
+    ThemeSwitcheService,
     SplashScreen,
     FormsModule, ReactiveFormsModule,
     Camera,

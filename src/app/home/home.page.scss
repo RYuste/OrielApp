@@ -3,8 +3,11 @@
   overflow: hidden;
 }
 
+.buscador{
+  color: black;
+}
+
 .cardInicio{
-  background: #FF9900; 
   font-family: RobotoBold;
 }
   #subCardInicio{
@@ -24,6 +27,9 @@ ion-card-title{
     display: block;
   }
 
+  #tituloCardInicio{
+    color: black;
+  }
   #titulo1{
     color: #663BC9;
     font-family: RobotoBold;

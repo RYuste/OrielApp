@@ -1,5 +1,5 @@
 import { Component,ViewChild} from '@angular/core';
-import { IonSlides, LoadingController, IonInfiniteScroll } from '@ionic/angular';
+import { IonSlides, LoadingController, AlertController, IonInfiniteScroll } from '@ionic/angular';
 
 import { ModelPage } from '../model/model.page';
 import { ModalController, NavParams } from '@ionic/angular';
@@ -12,11 +12,16 @@ import { TodoservicioService } from '../servicios/todoservicio.service';
 })
 export class HomePage {
   @ViewChild('SwipedTabsSlider') SwipedTabsSlider: IonSlides;
-
   private listado = [];
   private listadoPanel = [];
 
+  private ishackingme = null;
+  private ishackingmeCont = 0;
+
   private visible = false;
+  private visibleBasura = false;
+  private cont = 0;
+
   private tabs = ["selectTab(0)", "selectTab(1)"];
   private category: any = "0";
   private ntabs = 2;
@@ -25,9 +30,65 @@ export class HomePage {
 
   constructor(public modalCtrl: ModalController,
               private todoS: TodoservicioService,
+              private alertCtrl: AlertController,
               public loadingController: LoadingController) { }
 
   ngOnInit() {
+  }
+
+  /* Oculta o revela el botón de eliminarImagen */
+  deleteCards(){
+    clearTimeout(this.ishackingme);
+    this.ishackingmeCont++;
+    if(this.ishackingmeCont>6){
+      // Hace visible el boton
+      this.visibleBasura = true; 
+    }else{
+      // Aun no hemos pulsado todas las veces;
+      this.ishackingme=setTimeout(()=>{this.ishackingmeCont=0;},
+      1000);
+    }
+  }
+
+  /* Muestra una alerta para eliminar una imágen */
+  async  eliminarImagen(id){
+    const alert = await this.alertCtrl.create({
+      header: 'Eliminar Imágen',
+      message: '¿Deseas eliminar esta imágen?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Eliminar',
+          handler: () => {
+            console.log('Delete Okay');
+            this.todoS.borraNota(id);
+            this.ionViewDidEnter();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  /* Buscador */
+  getFilteredItem(ev: any, refresher) {
+    // set val to the value of the searchbar
+    const val = ev.target.value;
+
+    // Filtra por título
+    if (val && val.trim() != '') {
+      this.listadoPanel = this.listado.filter((item) => {
+        return (item.title.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      })
+    }else{ // Refresca las lista cuando se vacía el buscador
+      this.doRefresh(refresher);
+    }
   }
 
   // Abre un modal para añadir una imágen
@@ -35,12 +96,7 @@ export class HomePage {
     const modal = await this.modalCtrl.create({
       component: ModelPage
     });
-    // Al cerrar el modal actualiza el listado
-    modal.onDidDismiss().then(
-      () => {
-        this.ionViewDidEnter();
-      }
-    )
+    modal.onDidDismiss();
     await modal.present();
   }
 
@@ -51,6 +107,7 @@ export class HomePage {
   /* Se ejecuta cuando la página ha entrado completamente y ahora es la página activa. */
   ionViewDidEnter() {
     this.SwipedTabsIndicator = document.getElementById("indicator");
+
     this.presentLoading("Cargando...");
     this.todoS.leeDatos()
       .subscribe((querySnapshot) => {
@@ -87,7 +144,7 @@ export class HomePage {
     });
   }
   
-  /* El método que permite actualizar el indicado cuando se cambia de slide*/
+  /* Método que permite actualizar el indicado cuando se cambia de slide*/
   updateIndicatorPosition() {
     this.SwipedTabsSlider.getActiveIndex().then(i => {
       if (this.ntabs > i) {  // this condition is to avoid passing to incorrect index
@@ -95,7 +152,7 @@ export class HomePage {
       }
     });
   }
-  /* El método que anima la "rayita" mientras nos estamos deslizando por el slide*/
+  /* Método que anima la "rayita" mientras nos estamos deslizando por el slide*/
   animateIndicator(e) {
     //console.log(e.target.swiper.progress);
     if (this.SwipedTabsIndicator)
@@ -110,4 +167,14 @@ export class HomePage {
     });
     return await myloading.present();
   }
+
+  /* Limita el número de imágenes que muestra */
+  /*doInfinite(infiniteScroll) {
+    setTimeout(() => {
+      for (let item = 1; item < 3; item++) {
+        this.listado.push(this.listado.length);
+      }
+      infiniteScroll.complete();
+    }, 300);
+  }*/
 }
