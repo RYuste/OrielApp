@@ -46,7 +46,7 @@ export class ModelPage implements OnInit {
       };
       // Si no se ha cargado ninguna imágen, salta un error
       if(this.elemElem.src == "assets/images/imgDefault.png"){
-        this.toastShow('Añade una foto para Guardar.');
+        this.toastShow('Añade una imágen para Guardar.');
       }else{
       // Mostramos el cargando... 
       this.myloading = this.presentLoading();

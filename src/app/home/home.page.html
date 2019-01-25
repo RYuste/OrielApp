@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title id="titulo1" *ngIf="!isSearchbarOpened">
-      Oriel<span id="titulo2" (click)="deleteCards()">App</span>
+      Oriel<span id="titulo2" (click)="mostrarBotonEliminar()">App</span>
     </ion-title>
     <ion-searchbar class="buscador" *ngIf="isSearchbarOpened" showCancelButton="true" placeholder="Buscar" 
       (ionInput)="getFilteredItem($event, $event)" (ionClear)="cleared()" (ionCancel)="isSearchbarOpened=false"></ion-searchbar>
@@ -17,9 +17,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="doRefresh($event)" pullMin="110" pullMax="140">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Arrastra para refrescar" refreshingSpinner="crescent"
-      refreshingText="Cargando...">
+  <ion-refresher (ionRefresh)="doRefresh($event)" pullMin="100" pullMax="140">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Arrastra y suelta para refrescar" refreshingSpinner="crescent">
     </ion-refresher-content>
   </ion-refresher>
   <ion-slides #slides (ionSlideTransitionStart)="updateIndicatorPosition();updateCat(slides.getActiveIndex())" 
@@ -28,7 +27,7 @@
 
     <!-- INICIO -->
     <ion-slide style="overflow-y:scroll">
-      <ion-card color="primary">
+      <!--<ion-card color="primary">
         <ion-card-content class="cardInicio">
           <ion-card-title>
             <u id="tituloCardInicio">Bienvenido a <span id="titulo1">Oriel</span><span id="titulo2">App</span></u>
@@ -36,9 +35,41 @@
           <span id="subCardInicio">Sube tus imágenes favoritas y guarda las de tus amigos, o vota de entre 
           ellas las que más te guste. ¡Diviertete!</span>
         </ion-card-content>
-      </ion-card>
+      </ion-card>-->
 
       <ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
+        <ion-card-content>
+          <ion-card-title text-left id="tituloCard">
+            {{item.title}}
+          </ion-card-title>
+        </ion-card-content>
+        <div class="imgAMostrar">
+          <img id="imagenAMostrar" src="{{item.img}}"/>
+        </div>
+        <ion-row>
+          <ion-col text-right>
+            <button class="buttonCard" ion-button (click)="meGusta(item.id)">
+              <ion-icon name="thumbs-up" *ngIf="!visibleLike"></ion-icon> 
+              <ion-icon id="iconoLike" name="thumbs-up" *ngIf="visibleLike"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col text-center>
+            <button class="buttonCard" ion-button *ngIf="visibleBasura" (click)="eliminarImagen(item.id)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </ion-col>
+          <ion-col text-left>
+            <button class="buttonCard" ion-button (click)="compartir(item)">
+              <ion-icon name="share"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </ion-slide>
+
+    <!-- FAVORITOS -->
+    <ion-slide style="overflow-y:scroll">
+      <!--<ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
         <ion-card-content>
           <ion-card-title text-left id="tituloCard">
             {{item.title}}
@@ -65,12 +96,7 @@
             </button>
           </ion-col>
         </ion-row>
-      </ion-card>
-    </ion-slide>
-
-    <!-- FAVORITOS -->
-    <ion-slide style="overflow-y:scroll">
-        dfhdfgh
+      </ion-card>-->
     </ion-slide>
   </ion-slides>
 

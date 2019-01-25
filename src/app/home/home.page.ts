@@ -1,9 +1,11 @@
 import { Component,ViewChild} from '@angular/core';
-import { IonSlides, LoadingController, AlertController, IonInfiniteScroll } from '@ionic/angular';
-
+import { IonSlides, LoadingController, AlertController, 
+          ActionSheetController, ToastController, IonInfiniteScroll } from '@ionic/angular';
 import { ModelPage } from '../model/model.page';
 import { ModalController, NavParams } from '@ionic/angular';
 import { TodoservicioService } from '../servicios/todoservicio.service';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @Component({
   selector: 'app-home',
@@ -18,26 +20,110 @@ export class HomePage {
   private ishackingme = null;
   private ishackingmeCont = 0;
 
-  private visible = false;
+  private visibleLike = false;
   private visibleBasura = false;
-  private cont = 0;
+  private contLikes = 0;
 
   private tabs = ["selectTab(0)", "selectTab(1)"];
   private category: any = "0";
   private ntabs = 2;
   private SwipedTabsIndicator: any = null;
-  //private image: any = null;
+
 
   constructor(public modalCtrl: ModalController,
+              private storage: NativeStorage,
+              private social: SocialSharing,
               private todoS: TodoservicioService,
               private alertCtrl: AlertController,
+              private sheetCtrl: ActionSheetController,
+              private toastCtrl: ToastController,
               public loadingController: LoadingController) { }
 
   ngOnInit() {
   }
 
+  /* ------------ */
+  meGusta(id){
+    // Si está pulsado el botón 'like', disminuye el contLikes y muestra el botón en OFF
+    /*if(this.visibleLike){
+      this.visibleLike = !this.visibleLike;
+      this.contLikes--;
+    }*/
+
+    /*if(!this.todoS.leeLikes(id)){
+      this.visibleLike = true;
+
+      this.todoS.añadeLikes(id).value;
+
+      this.contLikes++;
+      this.storage.setItem(id, this.contLikes);
+    }else{
+      // Ya se le ha dado like a la imágen
+    }*/
+
+    /*this.visible = !this.visible;
+    if(this.contLikes == 0){
+      this.contLikes++; 
+    }else{
+      this.contLikes--; 
+    }*/
+  }
+
+  /* Compartir imágen por redes sociales */
+  async compartir(item) {
+    const actionSheet = await this.sheetCtrl.create({
+      header: 'Compartir imágen: '+item.title,
+      buttons: [{
+        text: 'WhatsApp',
+        icon: 'logo-whatsapp',
+        handler: () => {
+          this.social.shareViaWhatsApp("¡Mira esta imágen de OrielApp!", item.img, null).then(() => {
+            // Success
+          }).catch((e) => {
+            // Error!
+            this.toastShow('No se ha podido compartir la imágen por WhatsApp.');
+          });
+        }
+      }, {
+        text: 'Twitter',
+        icon: 'logo-twitter',
+        handler: () => {
+          this.social.shareViaTwitter("¡Mira esta imágen de OrielApp!", item.img, null).then(() => {
+            // Success
+          }).catch((e) => {
+            // Error!
+            this.toastShow('No se ha podido compartir la imágen por Twitter.');
+          });
+        }
+      }, {
+        text: 'Instagram',
+        icon: 'logo-instagram',
+        handler: () => {
+          this.social.shareViaInstagram("¡Mira esta imágen de OrielApp!", item.img).then(() => {
+            // Success
+          }).catch((e) => {
+            // Error!
+            this.toastShow('No se ha podido compartir la imágen por Instagram.');
+          });
+        }
+      }, {
+        text: 'Facebook',
+        icon: 'logo-facebook',
+        handler: () => {
+          this.social.shareViaFacebook("¡Mira esta imágen de OrielApp!", item.img, null).then(() => {
+            // Success
+          }).catch((e) => {
+            // Error!
+            this.toastShow('No se ha podido compartir la imágen por Facebook.');
+          });
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
+
   /* Oculta o revela el botón de eliminarImagen */
-  deleteCards(){
+  mostrarBotonEliminar(){
     clearTimeout(this.ishackingme);
     this.ishackingmeCont++;
     if(this.ishackingmeCont>6){
@@ -46,7 +132,7 @@ export class HomePage {
     }else{
       // Aun no hemos pulsado todas las veces;
       this.ishackingme=setTimeout(()=>{this.ishackingmeCont=0;},
-      1000);
+      800);
     }
   }
 
@@ -98,10 +184,6 @@ export class HomePage {
     });
     modal.onDidDismiss();
     await modal.present();
-  }
-
-  meGusta(){
-    this.visible = !this.visible; 
   }
 
   /* Se ejecuta cuando la página ha entrado completamente y ahora es la página activa. */
@@ -166,6 +248,18 @@ export class HomePage {
       message: msg
     });
     return await myloading.present();
+  }
+
+  /* Mensaje informativo con "toast" */
+  async toastShow(msg) {
+    const toast = await this.toastCtrl.create({
+      message: msg,
+      showCloseButton: true,
+      position: 'bottom',
+      closeButtonText: 'Ok',
+      duration: 4000
+    });
+    toast.present();
   }
 
   /* Limita el número de imágenes que muestra */

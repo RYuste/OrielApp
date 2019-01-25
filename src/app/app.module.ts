@@ -18,6 +18,8 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from '../environments/environment';
 
 import { ThemeSwitcheService } from './servicios/theme-switche.service';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @NgModule({
   declarations: [AppComponent, ModelPage],
@@ -36,6 +38,8 @@ import { ThemeSwitcheService } from './servicios/theme-switche.service';
     SplashScreen,
     FormsModule, ReactiveFormsModule,
     Camera,
+    NativeStorage,
+    SocialSharing,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
