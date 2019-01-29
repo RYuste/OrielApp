@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="tertiary">
     <ion-title id="titulo">
-      Nueva Imágen
+      {{'nuevaImagen' | translate}}
     </ion-title>
   </ion-toolbar>
 <ion-fab vertical="bottom" horizontal="end" edge slot="fixed">
@@ -23,7 +23,7 @@
   <form [formGroup]="todo" (ngSubmit)="logForm()">
     <br>
     <ion-item>
-      <ion-input type="text" formControlName="title" placeholder="Introduce un título..." maxlength="35"></ion-input>
+      <ion-input type="text" formControlName="title" placeholder="{{'titulo' | translate}}" maxlength="35"></ion-input>
     </ion-item>
     <br>
     <ion-card class="contImg">
@@ -32,8 +32,8 @@
     <br>
     <ion-row>
       <ion-col text-center>
-        <ion-button color="dark" id="btCancelar" (click)="cerrarModal()">CANCELAR</ion-button>
-        <ion-button color="primary" id="btGuardar" type="submit" [disabled]="!todo.valid">GUARDAR</ion-button>
+        <ion-button color="dark" id="btCancelar" (click)="cerrarModal()">{{'cancelar' | translate}}</ion-button>
+        <ion-button color="primary" id="btGuardar" type="submit" [disabled]="!todo.valid">{{'guardar' | translate}}</ion-button>
       </ion-col>
     </ion-row>
   </form>

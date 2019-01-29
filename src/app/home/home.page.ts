@@ -1,11 +1,13 @@
 import { Component,ViewChild} from '@angular/core';
-import { IonSlides, LoadingController, AlertController, 
+import { IonSlides, LoadingController, AlertController, ModalController,
           ActionSheetController, ToastController, IonInfiniteScroll } from '@ionic/angular';
 import { ModelPage } from '../model/model.page';
-import { ModalController, NavParams } from '@ionic/angular';
 import { TodoservicioService } from '../servicios/todoservicio.service';
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { TranslateService } from '@ngx-translate/core';
+import { Storage } from '@ionic/storage';
+import { LocalDBService} from '../servicios/local-db.service';
+import { NetworkService } from '../servicios/network.service';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +24,6 @@ export class HomePage {
 
   private visibleLike = false;
   private visibleBasura = false;
-  private contLikes = 0;
 
   private tabs = ["selectTab(0)", "selectTab(1)"];
   private category: any = "0";
@@ -31,90 +32,119 @@ export class HomePage {
 
 
   constructor(public modalCtrl: ModalController,
-              private storage: NativeStorage,
               private social: SocialSharing,
-              private todoS: TodoservicioService,
+              private todoServ: TodoservicioService,
               private alertCtrl: AlertController,
               private sheetCtrl: ActionSheetController,
               private toastCtrl: ToastController,
+              private translate: TranslateService,
+              private storage: Storage,
+              private localDB: LocalDBService,
+              private network: NetworkService,
               public loadingController: LoadingController) { }
 
   ngOnInit() {
   }
 
-  /* ------------ */
-  meGusta(id){
+  /* Almacena los 'likes' dados en la imágen */
+  meGusta(id) {
     // Si está pulsado el botón 'like', disminuye el contLikes y muestra el botón en OFF
     /*if(this.visibleLike){
       this.visibleLike = !this.visibleLike;
       this.contLikes--;
     }*/
 
-    /*if(!this.todoS.leeLikes(id)){
-      this.visibleLike = true;
 
-      this.todoS.añadeLikes(id).value;
+    this.localDB.getLike(id).then((val) => {
+      console.log(id);
+      console.log(val);
 
-      this.contLikes++;
-      this.storage.setItem(id, this.contLikes);
-    }else{
-      // Ya se le ha dado like a la imágen
-    }*/
+      // Si existe este id en local no hago nada y muestro mensaje
+      if (val != null) {
+        this.toastShow("Ya has votado esta imágen.");
+      } else {
+        console.log("NO he votado aún");
+        //this.presentLoading(this.translate.instant("cargando"));
+        this.todoServ.leeLikes(id).subscribe((datos) => {
+          console.log(datos);
+          // Si ya existe lo actualiza, sino, lo crea
+          if (datos.exists) {
+            console.log(datos.data());
 
-    /*this.visible = !this.visible;
-    if(this.contLikes == 0){
-      this.contLikes++; 
-    }else{
-      this.contLikes--; 
-    }*/
+            let data = {
+              contLikes: +datos.data()['contLikes'] + 1
+            };
+            // Actualizar el nuevo valor
+            this.todoServ.actualizaLikes(id, data)
+              .then((docRef) => {
+                // Guarda el id en local para saber que ya ha votado
+                this.localDB.setLike(id, data);
+                // Cerramos el cargando...
+                //this.loadingController.dismiss();
+              });
+          } else {
+            let data = {
+              contLikes: 1
+            };
+            // Crear el nuevo valor
+            this.todoServ.añadeLikes(id,data).then((docRef) => {
+              // Guarda el id en local para saber que ya ha votado
+              this.localDB.setLike(id, data);
+              // Cerramos el cargando...
+              //this.loadingController.dismiss();
+            });
+          }
+        });
+      }
+    });
   }
 
   /* Compartir imágen por redes sociales */
   async compartir(item) {
     const actionSheet = await this.sheetCtrl.create({
-      header: 'Compartir imágen: '+item.title,
+      header: this.translate.instant("compartir"),
       buttons: [{
         text: 'WhatsApp',
         icon: 'logo-whatsapp',
         handler: () => {
-          this.social.shareViaWhatsApp("¡Mira esta imágen de OrielApp!", item.img, null).then(() => {
+          this.social.shareViaWhatsApp(null, item.img, null).then(() => {
             // Success
           }).catch((e) => {
             // Error!
-            this.toastShow('No se ha podido compartir la imágen por WhatsApp.');
+            this.toastShow(this.translate.instant("compartirErrorWhatsApp"));
           });
         }
       }, {
         text: 'Twitter',
         icon: 'logo-twitter',
         handler: () => {
-          this.social.shareViaTwitter("¡Mira esta imágen de OrielApp!", item.img, null).then(() => {
+          this.social.shareViaTwitter(null, item.img, null).then(() => {
             // Success
           }).catch((e) => {
             // Error!
-            this.toastShow('No se ha podido compartir la imágen por Twitter.');
+            this.toastShow(this.translate.instant("compartirErrorTwitter"));
           });
         }
       }, {
         text: 'Instagram',
         icon: 'logo-instagram',
         handler: () => {
-          this.social.shareViaInstagram("¡Mira esta imágen de OrielApp!", item.img).then(() => {
+          this.social.shareViaInstagram(null, item.img).then(() => {
             // Success
           }).catch((e) => {
             // Error!
-            this.toastShow('No se ha podido compartir la imágen por Instagram.');
+            this.toastShow(this.translate.instant("compartirErrorInstagram"));
           });
         }
       }, {
         text: 'Facebook',
         icon: 'logo-facebook',
         handler: () => {
-          this.social.shareViaFacebook("¡Mira esta imágen de OrielApp!", item.img, null).then(() => {
+          this.social.shareViaFacebook(null, item.img, null).then(() => {
             // Success
           }).catch((e) => {
             // Error!
-            this.toastShow('No se ha podido compartir la imágen por Facebook.');
+            this.toastShow(this.translate.instant("compartirErrorFacebook"));
           });
         }
       }]
@@ -139,21 +169,20 @@ export class HomePage {
   /* Muestra una alerta para eliminar una imágen */
   async  eliminarImagen(id){
     const alert = await this.alertCtrl.create({
-      header: 'Eliminar Imágen',
-      message: '¿Deseas eliminar esta imágen?',
+      header: this.translate.instant("eliminarImagen"),
+      message: this.translate.instant("eliminarPrg"),
       buttons: [
         {
-          text: 'Cancelar',
-          role: 'cancel',
+          text: this.translate.instant("cancel"),
           cssClass: 'secondary',
           handler: (blah) => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: 'Eliminar',
+          text: this.translate.instant("eliminar"),
           handler: () => {
             console.log('Delete Okay');
-            this.todoS.borraNota(id);
+            this.todoServ.borraNota(id);
             this.ionViewDidEnter();
           }
         }
@@ -190,8 +219,8 @@ export class HomePage {
   ionViewDidEnter() {
     this.SwipedTabsIndicator = document.getElementById("indicator");
 
-    this.presentLoading("Cargando...");
-    this.todoS.leeDatos()
+    this.presentLoading(this.translate.instant("cargando"));
+    this.todoServ.leeDatos()
       .subscribe((querySnapshot) => {
         this.listado = [];
         querySnapshot.forEach((doc) => {
@@ -207,7 +236,7 @@ export class HomePage {
 
   /* Componente Refresher de IONIC v4. Refresca los datos */
   doRefresh(refresher) {
-    this.todoS.leeDatos()
+    this.todoServ.leeDatos()
       .subscribe(querySnapshot => {
         this.listado = [];
         querySnapshot.forEach((doc) => {

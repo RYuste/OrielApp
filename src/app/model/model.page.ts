@@ -4,6 +4,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
 import { TodoservicioService } from '../servicios/todoservicio.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-model',
@@ -22,6 +23,7 @@ export class ModelPage implements OnInit {
             private camera: Camera,
             private todoServ: TodoservicioService,
             private toastCtrl: ToastController,
+            private translate: TranslateService,
             public loadingController: LoadingController) {
 
     // Imágen por defecto al iniciar el model
@@ -46,7 +48,7 @@ export class ModelPage implements OnInit {
       };
       // Si no se ha cargado ninguna imágen, salta un error
       if(this.elemElem.src == "assets/images/imgDefault.png"){
-        this.toastShow('Añade una imágen para Guardar.');
+        this.toastShow(this.translate.instant("guardarError"));
       }else{
       // Mostramos el cargando... 
       this.myloading = this.presentLoading();
@@ -63,7 +65,7 @@ export class ModelPage implements OnInit {
           // Cerramos el cargando...
           this.loadingController.dismiss();
           // Mostramos un mensaje de error 
-          this.toastShow('No se ha podido guardar la imágen.');
+          this.toastShow(this.translate.instant("guardarError2"));
         });
       }
   }
@@ -71,7 +73,7 @@ export class ModelPage implements OnInit {
   // Componente de la interfaz IONIC v4
   async presentLoading() {
     this.myloading = await this.loadingController.create({
-      message: 'Guardando...'
+      message: this.translate.instant("guardando")
     });
     return await this.myloading.present();
   }

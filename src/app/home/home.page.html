@@ -6,7 +6,7 @@
     <ion-title id="titulo1" *ngIf="!isSearchbarOpened">
       Oriel<span id="titulo2" (click)="mostrarBotonEliminar()">App</span>
     </ion-title>
-    <ion-searchbar class="buscador" *ngIf="isSearchbarOpened" showCancelButton="true" placeholder="Buscar" 
+    <ion-searchbar class="buscador" *ngIf="isSearchbarOpened" showCancelButton="true" placeholder="{{'buscar' | translate}}" 
       (ionInput)="getFilteredItem($event, $event)" (ionClear)="cleared()" (ionCancel)="isSearchbarOpened=false"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button icon-only *ngIf="!isSearchbarOpened" (click)="isSearchbarOpened=true">
@@ -18,7 +18,7 @@
 
 <ion-content>
   <ion-refresher (ionRefresh)="doRefresh($event)" pullMin="100" pullMax="140">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Arrastra y suelta para refrescar" refreshingSpinner="crescent">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="{{'refresher' | translate}}" refreshingSpinner="crescent">
     </ion-refresher-content>
   </ion-refresher>
   <ion-slides #slides (ionSlideTransitionStart)="updateIndicatorPosition();updateCat(slides.getActiveIndex())" 
@@ -119,11 +119,11 @@
       style="background-color:var(--ion-color-primary)" color="black">
       <ion-segment-button layout="icon-start" value="0" style="--padding-end:0px;--padding-start:0px">
         <ion-icon name="md-images" style="margin-right:1px;zoom:0.8" color="tertiary"></ion-icon>
-        <ion-label id="TitSegment">Inicio</ion-label>
+        <ion-label id="TitSegment">{{'galeria' | translate}}</ion-label>
       </ion-segment-button>
       <ion-segment-button layout="icon-start" value="1" style="--padding-end:0px;--padding-start:0px">
         <ion-icon name="md-heart" style="margin-right:1px;zoom:0.8" color="tertiary"></ion-icon>
-        <ion-label id="TitSegment">Favoritos</ion-label>
+        <ion-label id="TitSegment">{{'favoritos' | translate}}</ion-label>
       </ion-segment-button>
     </ion-segment>
     <div id='indicator' class="SwipedTabs-indicatorSegment" [ngStyle]=" 

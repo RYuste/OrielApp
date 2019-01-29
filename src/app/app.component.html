@@ -3,25 +3,25 @@
     <ion-menu>
       <ion-header>
         <ion-toolbar color="primary">
-          <ion-title style="font-family: RobotoBold;">Menú</ion-title>
+          <ion-title style="font-family: RobotoBold;">{{ "menu" | translate }}</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content>
         <ion-item lines="none">
           <ion-icon slot="start" name="moon" color="tertiary"></ion-icon>
-          <ion-label style="font-size:0.95rem; font-family: RobotoBold;">Modo nocturno</ion-label>
+          <ion-label style="font-size:0.95rem; font-family: RobotoBold;">{{ "modoNocturno" | translate }}</ion-label>
           <ion-toggle color="tertiary" slot="end" [(ngModel)]="skinmenu" (ionChange)="changeSkin($event)"></ion-toggle>
         </ion-item>
         <ion-item lines="none">
           <ion-icon slot="start" name="flag" color="tertiary"></ion-icon>
-          <ion-label style="font-size:0.95rem; font-family: RobotoBold;">Idioma (ES/EN)</ion-label>
+          <ion-label style="font-size:0.95rem; font-family: RobotoBold;">{{ "idioma" | translate }}</ion-label>
           <ion-toggle color="tertiary" slot="end" [(ngModel)]="langmenu" (ionChange)="changeLang($event)"></ion-toggle>
         </ion-item>
       </ion-content>
       <ion-footer>
         <ion-item color="primary" lines="none">
           <ion-label style="font-size:0.85rem;">
-            <span style="font-family: RobotoBold;">Realizado por:</span> Rafael Yuste Jiménez
+            <span style="font-family: RobotoBold;">{{ "autor" | translate }}</span> Rafael Yuste Jiménez
           </ion-label>
         </ion-item>
       </ion-footer>

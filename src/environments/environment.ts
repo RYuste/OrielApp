@@ -8,7 +8,7 @@ export const environment = {
     storageBucket: "orielapp-44155.appspot.com",
     messagingSenderId: "405432123899",
     todoColeccion: "todo",
-    likeColeccion: "like"
+    likeColeccion: "likes"
   },
   currentLanguages:['es','en'], //idiomas disponibles de la aplicación
   defaultLanguage:"es",  //idioma por defecto
