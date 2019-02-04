@@ -23,5 +23,9 @@
     "guardarError": "Add an image to Save.",
     "guardarError2": "The image could not be saved.",
     "guardando": "Saving...",
-    "cargando": "Loading..."
+    "cargando": "Loading...",
+    "votado": "You have already voted this image.",
+    "votadoNuevo": "Image voted successfully.",
+    "conexionON": "Internet connection established.",
+    "conexionOFF": "You have no connection Try again later."
 }

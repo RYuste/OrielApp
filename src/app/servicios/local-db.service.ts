@@ -41,7 +41,14 @@ export class LocalDBService {
     return this.storage.set(id, this.datos);
   }
 
-
+  /* Get y Set del botón de like */
+  getVisibleLike(val){
+    return this.storage.get(val);
+  }
+  setVisibleLike(id, val){
+    this.datos.visibleLike = val;
+    return this.storage.set(id, this.datos);
+  }
 
   /* Get y Set del idioma */
   getLang() {
@@ -51,7 +58,6 @@ export class LocalDBService {
     this.datos.lang = val;
     return this.storage.set("datos", this.datos);
   }
-  
 
   /* Get y Set del tema */
   getSkin() {
@@ -59,6 +65,24 @@ export class LocalDBService {
   }
   setSkin(val) {
     this.datos.skin = val;
+    return this.storage.set("datos", this.datos);
+  }
+
+  /* Get y Set para comprobar si el toggle del tema está pulsado o no */
+  getCheckedToggleSkin(){
+    return this.datos.checkedToggleSkin;
+  }
+  setCheckedToggleSkin(val){
+    this.datos.checkedToggleSkin = val;
+    return this.storage.set("datos", this.datos);
+  }
+
+  /* Get y Set para comprobar si el toggle del idioma está pulsado o no */
+  getCheckedToggleLang(){
+    return this.datos.checkedToggleLang;
+  }
+  setCheckedToggleLang(val){
+    this.datos.checkedToggleLang = val;
     return this.storage.set("datos", this.datos);
   }
 }

@@ -27,16 +27,6 @@
 
     <!-- INICIO -->
     <ion-slide style="overflow-y:scroll">
-      <!--<ion-card color="primary">
-        <ion-card-content class="cardInicio">
-          <ion-card-title>
-            <u id="tituloCardInicio">Bienvenido a <span id="titulo1">Oriel</span><span id="titulo2">App</span></u>
-          </ion-card-title>
-          <span id="subCardInicio">Sube tus imágenes favoritas y guarda las de tus amigos, o vota de entre 
-          ellas las que más te guste. ¡Diviertete!</span>
-        </ion-card-content>
-      </ion-card>-->
-
       <ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
         <ion-card-content>
           <ion-card-title text-left id="tituloCard">
@@ -69,7 +59,7 @@
 
     <!-- FAVORITOS -->
     <ion-slide style="overflow-y:scroll">
-      <!--<ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
+      <ion-card *ngFor="let item of listadoPanelFav; let i = index;" style="background-color: rgb(243, 236, 236)">
         <ion-card-content>
           <ion-card-title text-left id="tituloCard">
             {{item.title}}
@@ -79,31 +69,23 @@
           <img id="imagenAMostrar" src="{{item.img}}"/>
         </div>
         <ion-row>
-          <ion-col text-center>
-            <button class="buttonCard" ion-button (click)="meGusta()">
-              <ion-icon name="thumbs-up" *ngIf="!visible"></ion-icon> 
-              <ion-icon id="iconoLike" name="thumbs-up" *ngIf="visible"></ion-icon>
-            </button>
+          <ion-col text-right>
+            <ion-icon class="buttonCard" id="iconoLike" name="thumbs-up"></ion-icon><span id="numLikes">{{item.contLikes}}</span>
           </ion-col>
           <ion-col text-center>
             <button class="buttonCard" ion-button *ngIf="visibleBasura" (click)="eliminarImagen(item.id)">
               <ion-icon name="trash"></ion-icon>
             </button>
           </ion-col>
-          <ion-col text-center>
-            <button class="buttonCard" ion-button>
+          <ion-col text-left>
+            <button class="buttonCard" ion-button (click)="compartir(item)">
               <ion-icon name="share"></ion-icon>
             </button>
           </ion-col>
         </ion-row>
-      </ion-card>-->
+      </ion-card>
     </ion-slide>
   </ion-slides>
-
-  <!-- Limíta el scroll -->
-  <!---<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando imágenes..."></ion-infinite-scroll-content>
-  </ion-infinite-scroll>-->
 
   <!-- Botón flotante -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="padding-bottom: 5px;padding-right: 5px;">

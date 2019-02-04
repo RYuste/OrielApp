@@ -6,6 +6,7 @@ import { ThemeSwitcheService } from './servicios/theme-switche.service';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { LocalDBService} from '../app/servicios/local-db.service';
+import { NetworkService } from '../app/servicios/network.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private themeS: ThemeSwitcheService,
     private translate: TranslateService,
-    private localDB: LocalDBService
+    private localDB: LocalDBService,
+    private network: NetworkService
   ) {
     this.initializeApp();
     this.skinmenu = (environment.defaultSkin == "light" ? false : true);
@@ -42,6 +44,9 @@ export class AppComponent {
       //Cargamos las preferencias del usuario
       this.themeS.setTheme(this.localDB.getSkin());
       this.translate.use(this.localDB.getLang());
+      // Cargamos si el toggle está pulsado o no
+      this.skinmenu = this.localDB.getCheckedToggleSkin();
+      this.langmenu = this.localDB.getCheckedToggleLang();
     });
   }
 
@@ -50,9 +55,13 @@ export class AppComponent {
     if (e.detail.checked) {
       this.localDB.setSkin("dark");
       this.themeS.setTheme("dark");
+
+      this.localDB.setCheckedToggleSkin(true);
     } else {
       this.localDB.setSkin("light");
       this.themeS.setTheme("light");
+      
+      this.localDB.setCheckedToggleSkin(false);
     }
   }
 
@@ -61,9 +70,13 @@ export class AppComponent {
     if (e.detail.checked) {
       this.localDB.setLang("en");
       this.translate.use("en");
+
+      this.localDB.setCheckedToggleLang(true);
     } else {
       this.localDB.setLang("es");
       this.translate.use("es");
+
+      this.localDB.setCheckedToggleLang(false);
     }
   }
 }

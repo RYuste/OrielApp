@@ -5,9 +5,7 @@ import { ModelPage } from '../model/model.page';
 import { TodoservicioService } from '../servicios/todoservicio.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
 import { LocalDBService} from '../servicios/local-db.service';
-import { NetworkService } from '../servicios/network.service';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +16,7 @@ export class HomePage {
   @ViewChild('SwipedTabsSlider') SwipedTabsSlider: IonSlides;
   private listado = [];
   private listadoPanel = [];
+  private listadoPanelFav = [];
 
   private ishackingme = null;
   private ishackingmeCont = 0;
@@ -38,9 +37,7 @@ export class HomePage {
               private sheetCtrl: ActionSheetController,
               private toastCtrl: ToastController,
               private translate: TranslateService,
-              private storage: Storage,
               private localDB: LocalDBService,
-              private network: NetworkService,
               public loadingController: LoadingController) { }
 
   ngOnInit() {
@@ -48,29 +45,20 @@ export class HomePage {
 
   /* Almacena los 'likes' dados en la imágen */
   meGusta(id) {
-    // Si está pulsado el botón 'like', disminuye el contLikes y muestra el botón en OFF
-    /*if(this.visibleLike){
-      this.visibleLike = !this.visibleLike;
-      this.contLikes--;
-    }*/
-
-
     this.localDB.getLike(id).then((val) => {
       console.log(id);
       console.log(val);
 
       // Si existe este id en local no hago nada y muestro mensaje
       if (val != null) {
-        this.toastShow("Ya has votado esta imágen.");
+        this.toastShow(this.translate.instant("votado"));
       } else {
         console.log("NO he votado aún");
-        //this.presentLoading(this.translate.instant("cargando"));
+        this.presentLoading(this.translate.instant("cargando"));
         this.todoServ.leeLikes(id).subscribe((datos) => {
           console.log(datos);
           // Si ya existe lo actualiza, sino, lo crea
           if (datos.exists) {
-            console.log(datos.data());
-
             let data = {
               contLikes: +datos.data()['contLikes'] + 1
             };
@@ -79,19 +67,27 @@ export class HomePage {
               .then((docRef) => {
                 // Guarda el id en local para saber que ya ha votado
                 this.localDB.setLike(id, data);
+                // Cambia el color del iconoLike
+                this.localDB.setVisibleLike(id, true);
+                this.localDB.getVisibleLike(id);
                 // Cerramos el cargando...
-                //this.loadingController.dismiss();
+                this.loadingController.dismiss();
+                this.toastShow(this.translate.instant("votadoNuevo"));
               });
           } else {
             let data = {
               contLikes: 1
             };
             // Crear el nuevo valor
-            this.todoServ.añadeLikes(id,data).then((docRef) => {
+            this.todoServ.añadeLikes(id, data).then((docRef) => {
               // Guarda el id en local para saber que ya ha votado
               this.localDB.setLike(id, data);
+              // Cambia el color del iconoLike
+              /*this.localDB.setVisibleLike(id, true);
+              this.localDB.getVisibleLike(id);*/
               // Cerramos el cargando...
-              //this.loadingController.dismiss();
+              this.loadingController.dismiss();
+              this.toastShow(this.translate.instant("votadoNuevo"));
             });
           }
         });
@@ -182,7 +178,8 @@ export class HomePage {
           text: this.translate.instant("eliminar"),
           handler: () => {
             console.log('Delete Okay');
-            this.todoServ.borraNota(id);
+            this.todoServ.borraImagen(id); // Elimina la imágen
+            this.todoServ.borraLike(id); // Elimina los 'likes' de la imagén borrada
             this.ionViewDidEnter();
           }
         }
@@ -215,7 +212,8 @@ export class HomePage {
     await modal.present();
   }
 
-  /* Se ejecuta cuando la página ha entrado completamente y ahora es la página activa. */
+  /* Se ejecuta cuando la página ha entrado completamente 
+  y ahora es la página activa. */
   ionViewDidEnter() {
     this.SwipedTabsIndicator = document.getElementById("indicator");
 
@@ -224,14 +222,29 @@ export class HomePage {
       .subscribe((querySnapshot) => {
         this.listado = [];
         querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          //console.log(doc.id, " => ", doc.data());
-          this.listado.push({ id: doc.id, ...doc.data() });
+          this.listado.push({ id: doc.id, ...doc.data()});
         });
         //console.log(this.listado);
         this.listadoPanel = this.listado;
-        this.loadingController.dismiss();
+
+        // Hemos terminado de cargar todas las imágenes , ahora los likes;
+        this.todoServ.leeLikesOrdenados()
+          .then((querySnapshot) => {
+            this.listado = [];
+            querySnapshot.forEach((doc) => {
+              // Busco en this.listado lo que tengan el mismo doc.id y añado countLikes
+              let index = this.listado.find(index => index.id === doc.id);
+              console.log(index);
+              //if(x.id ==)
+              //this.listado[index]=doc.countLikes;
+              this.listado.push({ id: doc.id, ...doc.data()});
+            });
+            // He terminado de cargar los likes
+            this.listadoPanelFav = this.listado;
+            this.loadingController.dismiss();
+          });
       });
+
   }
 
   /* Componente Refresher de IONIC v4. Refresca los datos */
@@ -252,6 +265,14 @@ export class HomePage {
     this.category = "0";
     this.SwipedTabsSlider.length().then(l => {
       this.ntabs = l;
+    });
+  }
+
+  /* Actualiza la categoría que esté en ese momento activa*/
+  updateCat(cat: Promise<any>) {
+    cat.then(dat => {
+      this.category = dat;
+      this.category = +this.category;
     });
   }
   
@@ -290,14 +311,4 @@ export class HomePage {
     });
     toast.present();
   }
-
-  /* Limita el número de imágenes que muestra */
-  /*doInfinite(infiniteScroll) {
-    setTimeout(() => {
-      for (let item = 1; item < 3; item++) {
-        this.listado.push(this.listado.length);
-      }
-      infiniteScroll.complete();
-    }, 300);
-  }*/
 }
