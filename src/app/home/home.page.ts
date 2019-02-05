@@ -22,8 +22,6 @@ export class HomePage {
 
   private ishackingme = null;
   private ishackingmeCont = 0;
-
-  private visibleLike: any;
   private visibleBasura = false;
 
   private tabs = ["selectTab(0)", "selectTab(1)"];
@@ -166,7 +164,7 @@ export class HomePage {
       message: this.translate.instant("eliminarPrg"),
       buttons: [
         {
-          text: this.translate.instant("cancel"),
+          text: this.translate.instant("cancelarElm"),
           cssClass: 'secondary',
           handler: (blah) => {
             console.log('Confirm Cancel');
@@ -216,7 +214,7 @@ export class HomePage {
   ionViewDidEnter() {
     this.SwipedTabsIndicator = document.getElementById("indicator");
 
-    this.presentLoading(this.translate.instant("cargando"));
+    this.presentLoading(this.translate.instant("cargandoInicio"));
     this.todoServ.leeDatos()
       .subscribe((querySnapshot) => {
         this.listado = [];
