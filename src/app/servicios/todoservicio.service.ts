@@ -11,8 +11,8 @@ export class TodoservicioService {
 
   myCollection: any;
   myCollectionLike: any;
-  queue = [];   // Tareas a realizar cuando vuelva internet, no implementado
-  isConnected = true;  // Saber si estamos con red para realizar conexiones o almacenarlas en queue
+  queue = [];
+  isConnected = true;
 
   constructor(private fireStore: AngularFirestore, private storage: Storage) {
     /*Crea una referencia a la colección 'todo' y 'likes' que empleamos para realizar las
@@ -54,6 +54,16 @@ export class TodoservicioService {
   }
 
   /*
+  Elimina el documento identificado por id de la colección 'likes'.
+  Devuelve un Promise.
+  */
+  borraLike(id) {
+    return this.myCollectionLike.doc(id).delete();
+  }
+
+  /*------------------------------------------------------------------------------------*/
+
+  /*
   Recibe un objeto y lo guarda como un documento nuevo en la colección 'todo'.
   Devuelve un Promise.
   */
@@ -77,13 +87,7 @@ export class TodoservicioService {
     return this.myCollection.doc(id).delete();
   }
 
-  /*
-  Elimina el documento identificado por id de la colección 'likes'.
-  Devuelve un Promise.
-  */
-  borraLike(id) {
-    return this.myCollectionLike.doc(id).delete();
-  }
+  /*-------------------------------------------------------------------------------*/
 
   /*
   Ejecuta la lista de tareas pendientes cuando vuelve internet, esta función

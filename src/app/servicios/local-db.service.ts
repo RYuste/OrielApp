@@ -41,15 +41,6 @@ export class LocalDBService {
     return this.storage.set(id, this.datos);
   }
 
-  /* Get y Set del botón de like */
-  getVisibleLike(val){
-    return this.storage.get(val);
-  }
-  setVisibleLike(id, val){
-    this.datos.visibleLike = val;
-    return this.storage.set(id, this.datos);
-  }
-
   /* Get y Set del idioma */
   getLang() {
     return this.datos.lang;

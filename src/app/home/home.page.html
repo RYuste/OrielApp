@@ -7,7 +7,7 @@
       Oriel<span id="titulo2" (click)="mostrarBotonEliminar()">App</span>
     </ion-title>
     <ion-searchbar class="buscador" *ngIf="isSearchbarOpened" showCancelButton="true" placeholder="{{'buscar' | translate}}" 
-      (ionInput)="getFilteredItem($event, $event)" (ionClear)="cleared()" (ionCancel)="isSearchbarOpened=false"></ion-searchbar>
+      (ionInput)="getFilteredItem($event, $event)" (ionCancel)="isSearchbarOpened=false"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button icon-only *ngIf="!isSearchbarOpened" (click)="isSearchbarOpened=true">
         <ion-icon name="search"></ion-icon>
@@ -25,7 +25,7 @@
     (ionSlideWillChange)="updateIndicatorPosition()" (ionSlideDidChange)="updateIndicatorPosition()" #SwipedTabsSlider
     (ionSlideDrag)="animateIndicator($event)">
 
-    <!-- INICIO -->
+    <!-- GALERÍA -->
     <ion-slide style="overflow-y:scroll">
       <ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
         <ion-card-content>
@@ -39,8 +39,7 @@
         <ion-row>
           <ion-col text-right>
             <button class="buttonCard" ion-button (click)="meGusta(item.id)">
-              <ion-icon name="thumbs-up" *ngIf="!visibleLike"></ion-icon> 
-              <ion-icon id="iconoLike" name="thumbs-up" *ngIf="visibleLike"></ion-icon>
+              <ion-icon name="thumbs-up"></ion-icon>
             </button>
           </ion-col>
           <ion-col text-center>
@@ -59,7 +58,7 @@
 
     <!-- FAVORITOS -->
     <ion-slide style="overflow-y:scroll">
-      <ion-card *ngFor="let item of listadoPanelFav; let i = index;" style="background-color: rgb(243, 236, 236)">
+      <ion-card *ngFor="let item of listadoPanel; let i = index;" style="background-color: rgb(243, 236, 236)">
         <ion-card-content>
           <ion-card-title text-left id="tituloCard">
             {{item.title}}

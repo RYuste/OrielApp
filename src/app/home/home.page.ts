@@ -1,6 +1,6 @@
 import { Component,ViewChild} from '@angular/core';
 import { IonSlides, LoadingController, AlertController, ModalController,
-          ActionSheetController, ToastController, IonInfiniteScroll } from '@ionic/angular';
+          ActionSheetController, ToastController } from '@ionic/angular';
 import { ModelPage } from '../model/model.page';
 import { TodoservicioService } from '../servicios/todoservicio.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
@@ -14,6 +14,7 @@ import { LocalDBService} from '../servicios/local-db.service';
 })
 export class HomePage {
   @ViewChild('SwipedTabsSlider') SwipedTabsSlider: IonSlides;
+
   private listado = [];
   private listadoPanel = [];
   private listadoPanelFav = [];
@@ -21,7 +22,7 @@ export class HomePage {
   private ishackingme = null;
   private ishackingmeCont = 0;
 
-  private visibleLike = false;
+  private visibleLike: any;
   private visibleBasura = false;
 
   private tabs = ["selectTab(0)", "selectTab(1)"];
@@ -55,6 +56,7 @@ export class HomePage {
       } else {
         console.log("NO he votado aún");
         this.presentLoading(this.translate.instant("cargando"));
+
         this.todoServ.leeLikes(id).subscribe((datos) => {
           console.log(datos);
           // Si ya existe lo actualiza, sino, lo crea
@@ -67,9 +69,6 @@ export class HomePage {
               .then((docRef) => {
                 // Guarda el id en local para saber que ya ha votado
                 this.localDB.setLike(id, data);
-                // Cambia el color del iconoLike
-                this.localDB.setVisibleLike(id, true);
-                this.localDB.getVisibleLike(id);
                 // Cerramos el cargando...
                 this.loadingController.dismiss();
                 this.toastShow(this.translate.instant("votadoNuevo"));
@@ -82,9 +81,6 @@ export class HomePage {
             this.todoServ.añadeLikes(id, data).then((docRef) => {
               // Guarda el id en local para saber que ya ha votado
               this.localDB.setLike(id, data);
-              // Cambia el color del iconoLike
-              /*this.localDB.setVisibleLike(id, true);
-              this.localDB.getVisibleLike(id);*/
               // Cerramos el cargando...
               this.loadingController.dismiss();
               this.toastShow(this.translate.instant("votadoNuevo"));
@@ -152,18 +148,18 @@ export class HomePage {
   mostrarBotonEliminar(){
     clearTimeout(this.ishackingme);
     this.ishackingmeCont++;
-    if(this.ishackingmeCont>6){
+    if(this.ishackingmeCont>9){
       // Hace visible el boton
       this.visibleBasura = true; 
     }else{
-      // Aun no hemos pulsado todas las veces;
+      // Si no hemos pulsado todas las veces;
       this.ishackingme=setTimeout(()=>{this.ishackingmeCont=0;},
       800);
     }
   }
 
   /* Muestra una alerta para eliminar una imágen */
-  async  eliminarImagen(id){
+  async eliminarImagen(id){
     const alert = await this.alertCtrl.create({
       header: this.translate.instant("eliminarImagen"),
       message: this.translate.instant("eliminarPrg"),
@@ -205,10 +201,12 @@ export class HomePage {
 
   // Abre un modal para añadir una imágen
   async abrirModel(){
+    this.presentLoading(this.translate.instant("cargando"));
     const modal = await this.modalCtrl.create({
       component: ModelPage
     });
     modal.onDidDismiss();
+    this.loadingController.dismiss();
     await modal.present();
   }
 
@@ -222,41 +220,51 @@ export class HomePage {
       .subscribe((querySnapshot) => {
         this.listado = [];
         querySnapshot.forEach((doc) => {
-          this.listado.push({ id: doc.id, ...doc.data()});
+          this.listado.push({ id: doc.id, ...doc.data(), contLikes: 0});
         });
-        //console.log(this.listado);
+        console.log(this.listado);
         this.listadoPanel = this.listado;
 
         // Hemos terminado de cargar todas las imágenes , ahora los likes;
         this.todoServ.leeLikesOrdenados()
           .then((querySnapshot) => {
-            this.listado = [];
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach((docu) => {
               // Busco en this.listado lo que tengan el mismo doc.id y añado countLikes
-              let index = this.listado.find(index => index.id === doc.id);
-              console.log(index);
-              //if(x.id ==)
-              //this.listado[index]=doc.countLikes;
-              this.listado.push({ id: doc.id, ...doc.data()});
+              let indexe = this.listado.find(index => index.id === docu.id);
+              indexe.contLikes = docu.data().contLikes;
             });
             // He terminado de cargar los likes
-            this.listadoPanelFav = this.listado;
+            console.log(this.listado);
+            this.listadoPanel = this.listado;
             this.loadingController.dismiss();
           });
       });
-
   }
 
   /* Componente Refresher de IONIC v4. Refresca los datos */
   doRefresh(refresher) {
     this.todoServ.leeDatos()
-      .subscribe(querySnapshot => {
+      .subscribe((querySnapshot) => {
         this.listado = [];
         querySnapshot.forEach((doc) => {
-          this.listado.push({ id: doc.id, ...doc.data() });
+          this.listado.push({ id: doc.id, ...doc.data(), contLikes: 0});
         });
+        console.log(this.listado);
         this.listadoPanel = this.listado;
-        refresher.target.complete();
+
+        // Hemos terminado de cargar todas las imágenes , ahora los likes
+        this.todoServ.leeLikesOrdenados()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((docu) => {
+              // Busco en this.listado lo que tengan el mismo doc.id y añado countLikes
+              let indexe = this.listado.find(index => index.id === docu.id);
+              indexe.contLikes = docu.data().contLikes;
+            });
+            // He terminado de cargar los likes
+            console.log(this.listado);
+            this.listadoPanel = this.listado;
+            refresher.target.complete();
+          });
       });
   }
 
@@ -286,7 +294,6 @@ export class HomePage {
   }
   /* Método que anima la "rayita" mientras nos estamos deslizando por el slide*/
   animateIndicator(e) {
-    //console.log(e.target.swiper.progress);
     if (this.SwipedTabsIndicator)
       this.SwipedTabsIndicator.style.webkitTransform = 'translate3d(' +
         ((e.target.swiper.progress * (this.ntabs - 1)) * 100) + '%,0,0)';

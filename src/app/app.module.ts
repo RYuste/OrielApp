@@ -44,7 +44,7 @@ export function setTranslateLoader(http: any) {
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     FormsModule, ReactiveFormsModule,
-    HttpClientModule, TranslateModule.forRoot({  //Módulo de traducción
+    HttpClientModule, TranslateModule.forRoot({  // Módulo de traducción
       loader: {
         provide: TranslateLoader, 
         useFactory: (setTranslateLoader), 
@@ -59,9 +59,9 @@ export function setTranslateLoader(http: any) {
     FormsModule, ReactiveFormsModule,
     Camera,
     NativeStorage,
-    SocialSharing, //Servicio de redes sociales:nativo
-    Network,  //Servicio de conexiones de red:nativo
-    NetworkService,  //Servicio para notificar si estamos sin red y ejecutar las tareas adecuadas
+    SocialSharing, // Servicio de redes sociales
+    Network,  // Servicio de conexiones de red:nativo
+    NetworkService,  // Servicio para notificar si estamos sin red y ejecutar las tareas adecuadas
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
