@@ -1,11 +1,13 @@
-import { Component,ViewChild} from '@angular/core';
-import { IonSlides, LoadingController, AlertController, ModalController,
-          ActionSheetController, ToastController } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
+import {
+  IonSlides, LoadingController, AlertController, ModalController,
+  ActionSheetController, ToastController
+} from '@ionic/angular';
 import { ModelPage } from '../model/model.page';
 import { TodoservicioService } from '../servicios/todoservicio.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TranslateService } from '@ngx-translate/core';
-import { LocalDBService} from '../servicios/local-db.service';
+import { LocalDBService } from '../servicios/local-db.service';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +19,6 @@ export class HomePage {
 
   private listado = [];
   private listadoPanel = [];
-  private listadoPanelFav = [];
 
   private ishackingme = null;
   private ishackingmeCont = 0;
@@ -32,14 +33,14 @@ export class HomePage {
 
 
   constructor(public modalCtrl: ModalController,
-              private social: SocialSharing,
-              private todoServ: TodoservicioService,
-              private alertCtrl: AlertController,
-              private sheetCtrl: ActionSheetController,
-              private toastCtrl: ToastController,
-              private translate: TranslateService,
-              private localDB: LocalDBService,
-              public loadingController: LoadingController) { }
+    private social: SocialSharing,
+    private todoServ: TodoservicioService,
+    private alertCtrl: AlertController,
+    private sheetCtrl: ActionSheetController,
+    private toastCtrl: ToastController,
+    private translate: TranslateService,
+    private localDB: LocalDBService,
+    public loadingController: LoadingController) { }
 
   ngOnInit() {
   }
@@ -145,21 +146,21 @@ export class HomePage {
   }
 
   /* Oculta o revela el botón de eliminarImagen */
-  mostrarBotonEliminar(){
+  mostrarBotonEliminar() {
     clearTimeout(this.ishackingme);
     this.ishackingmeCont++;
-    if(this.ishackingmeCont>9){
+    if (this.ishackingmeCont > 9) {
       // Hace visible el boton
-      this.visibleBasura = true; 
-    }else{
+      this.visibleBasura = true;
+    } else {
       // Si no hemos pulsado todas las veces;
-      this.ishackingme=setTimeout(()=>{this.ishackingmeCont=0;},
-      800);
+      this.ishackingme = setTimeout(() => { this.ishackingmeCont = 0; },
+        800);
     }
   }
 
   /* Muestra una alerta para eliminar una imágen */
-  async eliminarImagen(id){
+  async eliminarImagen(id) {
     const alert = await this.alertCtrl.create({
       header: this.translate.instant("eliminarImagen"),
       message: this.translate.instant("eliminarPrg"),
@@ -194,13 +195,13 @@ export class HomePage {
       this.listadoPanel = this.listado.filter((item) => {
         return (item.title.toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
-    }else{ // Refresca las lista cuando se vacía el buscador
+    } else { // Refresca las lista cuando se vacía el buscador
       this.doRefresh(refresher);
     }
   }
 
   // Abre un modal para añadir una imágen
-  async abrirModel(){
+  async abrirModel() {
     this.presentLoading(this.translate.instant("cargando"));
     const modal = await this.modalCtrl.create({
       component: ModelPage
@@ -220,7 +221,7 @@ export class HomePage {
       .subscribe((querySnapshot) => {
         this.listado = [];
         querySnapshot.forEach((doc) => {
-          this.listado.push({ id: doc.id, ...doc.data(), contLikes: 0});
+          this.listado.push({ id: doc.id, ...doc.data(), contLikes: 0 });
         });
         console.log(this.listado);
         this.listadoPanel = this.listado;
@@ -232,6 +233,10 @@ export class HomePage {
               // Busco en this.listado lo que tengan el mismo doc.id y añado countLikes
               let indexe = this.listado.find(index => index.id === docu.id);
               indexe.contLikes = docu.data().contLikes;
+              // Muestra a color el boton like
+              if (document.getElementById(docu.id)) {
+                document.getElementById(docu.id).classList.add('megusta');
+              }
             });
             // He terminado de cargar los likes
             console.log(this.listado);
@@ -247,7 +252,7 @@ export class HomePage {
       .subscribe((querySnapshot) => {
         this.listado = [];
         querySnapshot.forEach((doc) => {
-          this.listado.push({ id: doc.id, ...doc.data(), contLikes: 0});
+          this.listado.push({ id: doc.id, ...doc.data(), contLikes: 0 });
         });
         console.log(this.listado);
         this.listadoPanel = this.listado;
@@ -259,6 +264,10 @@ export class HomePage {
               // Busco en this.listado lo que tengan el mismo doc.id y añado countLikes
               let indexe = this.listado.find(index => index.id === docu.id);
               indexe.contLikes = docu.data().contLikes;
+              // Muestra a color el boton like
+              if (document.getElementById(docu.id)) {
+                document.getElementById(docu.id).classList.add('megusta');
+              }
             });
             // He terminado de cargar los likes
             console.log(this.listado);
@@ -283,7 +292,7 @@ export class HomePage {
       this.category = +this.category;
     });
   }
-  
+
   /* Método que permite actualizar el indicado cuando se cambia de slide*/
   updateIndicatorPosition() {
     this.SwipedTabsSlider.getActiveIndex().then(i => {

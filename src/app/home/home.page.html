@@ -25,7 +25,7 @@
     (ionSlideWillChange)="updateIndicatorPosition()" (ionSlideDidChange)="updateIndicatorPosition()" #SwipedTabsSlider
     (ionSlideDrag)="animateIndicator($event)">
 
-    <!-- GALERÍA -->
+    <!-- INICIO -->
     <ion-slide style="overflow-y:scroll">
       <ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
         <ion-card-content>
@@ -38,7 +38,7 @@
         </div>
         <ion-row>
           <ion-col text-right>
-            <button class="buttonCard" ion-button (click)="meGusta(item.id)">
+            <button [id]="item.id" class="buttonCard" ion-button (click)="meGusta(item.id)">
               <ion-icon name="thumbs-up"></ion-icon>
             </button>
           </ion-col>

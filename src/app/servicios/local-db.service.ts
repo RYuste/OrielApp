@@ -30,7 +30,7 @@ export class LocalDBService {
         });
     });
   }
-
+  
   /* Get y Set de los likes */
   getLike(val) {
     console.log(val);
