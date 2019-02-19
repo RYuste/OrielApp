@@ -17,7 +17,7 @@ interface ThemeStyle {
 })
 
 /**
- * Servicio encargado de cambiar el tema de la aplicación
+ * Servicio encargado de cambiar el tema de la aplicación.
  */
 export class ThemeSwitcheService {
 
@@ -74,16 +74,11 @@ export class ThemeSwitcheService {
     ]
  
   }
- 
-  cycleTheme(): void {
-    if(this.themes.length > this.currentTheme + 1){
-      this.currentTheme++;
-    } else {
-      this.currentTheme = 0;
-    }
-    this.setTheme(this.themes[this.currentTheme].name);
-  }
- 
+  
+  /**
+   * Cambia un tema por otro.
+   * @param name 
+   */
   setTheme(name): void {
     let theme = this.themes.find(theme => theme.name === name);
  
@@ -92,5 +87,14 @@ export class ThemeSwitcheService {
         document.documentElement.style.setProperty(style.themeVariable, style.value);
       });
     });
+  }
+
+  cycleTheme(): void {
+    if(this.themes.length > this.currentTheme + 1){
+      this.currentTheme++;
+    } else {
+      this.currentTheme = 0;
+    }
+    this.setTheme(this.themes[this.currentTheme].name);
   }
 }

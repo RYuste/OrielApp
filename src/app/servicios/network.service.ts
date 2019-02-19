@@ -7,6 +7,9 @@ import { TodoservicioService } from '../servicios/todoservicio.service';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Servicio para comprobar la conexión a internet.
+ */
 export class NetworkService {
 
   private isConnected;
@@ -34,7 +37,10 @@ export class NetworkService {
       });
     }
   
-  /* Mensaje informativo con "toast" */
+  /**
+   * Mensaje informativo con "toast".
+   * @param msg 
+   */
   async toastShow(msg) {
     const toast = await this.toastCtrl.create({
       message: msg,

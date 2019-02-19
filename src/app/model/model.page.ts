@@ -5,12 +5,16 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
 import { TodoservicioService } from '../servicios/todoservicio.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
   selector: 'app-model',
   templateUrl: './model.page.html',
   styleUrls: ['./model.page.scss'],
 })
+/**
+ * Página modal para añadir una imágen.
+ */
 export class ModelPage implements OnInit {
 
   @ViewChild('mifoto') elemElem:IonImg;
@@ -24,6 +28,7 @@ export class ModelPage implements OnInit {
             private todoServ: TodoservicioService,
             private toastCtrl: ToastController,
             private translate: TranslateService,
+            public keyboard: Keyboard,
             public loadingController: LoadingController) {
 
     // Imágen por defecto al iniciar el model
@@ -38,9 +43,18 @@ export class ModelPage implements OnInit {
   ngOnInit() {
   }
 
-  /* Ejecuta el submit del formulario. Crea un objeto proveniente del formulario 
-  y llama a la función 'guardarImagen' del servicio. Gestiona la
-  Promise para sincronizar la interfaz. */
+  /**
+   * Oculta el teclado nativo al pulsar enter.
+   */
+  cerrarTeclado(){
+    this.keyboard.hide();
+  }
+
+  /**
+   * Ejecuta el submit del formulario. Crea un objeto proveniente del formulario 
+   * y llama a la función 'guardarImagen' del servicio. Gestiona la
+   * Promise para sincronizar la interfaz.
+   */
   logForm() {
       let data = {
         title: this.todo.get("title").value,
@@ -70,7 +84,9 @@ export class ModelPage implements OnInit {
       }
   }
 
-  // Componente de la interfaz IONIC v4
+  /**
+   * Componente de la interfaz IONIC v4.
+   */
   async presentLoading() {
     this.myloading = await this.loadingController.create({
       message: this.translate.instant("guardando")
@@ -78,7 +94,9 @@ export class ModelPage implements OnInit {
     return await this.myloading.present();
   }
 
-  // Funcionalidad de la cámara
+  /**
+   * Funcionalidad de la cámara.
+   */
   openCamera(){
     const options: CameraOptions = {
       quality: 100,
@@ -98,7 +116,9 @@ export class ModelPage implements OnInit {
      });
   }
 
-  // Funcionalidad de la galería
+  /**
+   * Funcionalidad de la galería.
+   */
   openGallery(){
     const options: CameraOptions = {
       quality: 100,
@@ -119,12 +139,17 @@ export class ModelPage implements OnInit {
      });
   }
 
-  /* Cierra el modal */
+  /**
+   * Cierra el modal.
+   */
   cerrarModal(){
     this.modalCtrl.dismiss();
   }
 
-  /* Mensaje informativo con "toast" */
+  /**
+   * Mensaje informativo con "toast".
+   * @param msg 
+   */
   async toastShow(msg) {
     const toast = await this.toastCtrl.create({
       message: msg,

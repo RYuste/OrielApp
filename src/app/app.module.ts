@@ -10,6 +10,8 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { Camera } from '@ionic-native/camera/ngx';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
+
 import { ModelPage } from '../app/model/model.page'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -58,6 +60,7 @@ export function setTranslateLoader(http: any) {
     SplashScreen,
     FormsModule, ReactiveFormsModule,
     Camera,
+    Keyboard,
     NativeStorage,
     SocialSharing, // Servicio de redes sociales
     Network,  // Servicio de conexiones de red:nativo

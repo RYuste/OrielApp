@@ -7,6 +7,9 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Servicio para trabajar con la base de datos local.
+ */
 export class LocalDBService {
   datos: iModeloDB = {};
 
@@ -15,7 +18,9 @@ export class LocalDBService {
     this.datos.lang = environment.defaultLanguage;
   }
 
-  /* Carga las variables de la base de datos local */
+  /**
+   * Carga las variables de la base de datos local.
+   */
   initChecking() {
     return new Promise((resolve, reject) => {
       this.storage.get('datos').then((val: iModeloDB) => {
@@ -31,47 +36,79 @@ export class LocalDBService {
     });
   }
   
-  /* Get y Set de los likes */
+  /**
+   * Get de los likes.
+   * @param val 
+   */
   getLike(val) {
     console.log(val);
     return this.storage.get(val);
   }
+  /**
+   * Set de los likes.
+   * @param id 
+   * @param val 
+   */
   setLike(id, val){
     this.datos.like = val;
     return this.storage.set(id, this.datos);
   }
 
-  /* Get y Set del idioma */
+  /**
+   * Get del idioma.
+   */
   getLang() {
     return this.datos.lang;
   }
+  /**
+   * Set del idioma.
+   * @param val 
+   */
   setLang(val) {
     this.datos.lang = val;
     return this.storage.set("datos", this.datos);
   }
 
-  /* Get y Set del tema */
+  /**
+   * Get del tema.
+   */
   getSkin() {
     return this.datos.skin;
   }
+  /**
+   * Set del tema.
+   * @param val 
+   */
   setSkin(val) {
     this.datos.skin = val;
     return this.storage.set("datos", this.datos);
   }
 
-  /* Get y Set para comprobar si el toggle del tema está pulsado o no */
+  /**
+   * Get para comprobar si el toggle del tema está pulsado o no.
+   */
   getCheckedToggleSkin(){
     return this.datos.checkedToggleSkin;
   }
+  /**
+   * Set para comprobar si el toggle del tema está pulsado o no.
+   * @param val 
+   */
   setCheckedToggleSkin(val){
     this.datos.checkedToggleSkin = val;
     return this.storage.set("datos", this.datos);
   }
 
-  /* Get y Set para comprobar si el toggle del idioma está pulsado o no */
+  /**
+   * Get para comprobar si el toggle del idioma está pulsado o no.
+   */
   getCheckedToggleLang(){
     return this.datos.checkedToggleLang;
   }
+  /**
+   * Set para comprobar si el toggle del idioma está pulsado o no.
+   * @param val 
+   */
   setCheckedToggleLang(val){
     this.datos.checkedToggleLang = val;
     return this.storage.set("datos", this.datos);

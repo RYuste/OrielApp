@@ -31,6 +31,9 @@ export class AppComponent {
     this.langmenu = (environment.defaultLanguage == "es" ? false : true);
   }
 
+  /**
+   * Se ejecuta al iniciar la aplicación.
+   */
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
@@ -50,7 +53,10 @@ export class AppComponent {
     });
   }
 
-  /* Cambia el tema a light o dark */
+  /**
+   * Cambia el tema a light o dark.
+   * @param e 
+   */
   changeSkin(e) {
     if (e.detail.checked) {
       this.localDB.setSkin("dark");
@@ -65,7 +71,10 @@ export class AppComponent {
     }
   }
 
-  /* Cambia el idioma a español o ingles */
+  /**
+   * Cambia el idioma a español o inglés.
+   * @param e 
+   */
   changeLang(e) {
     if (e.detail.checked) {
       this.localDB.setLang("en");

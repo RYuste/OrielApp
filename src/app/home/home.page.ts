@@ -1,21 +1,27 @@
 import { Component, ViewChild } from '@angular/core';
 import {
   IonSlides, LoadingController, AlertController, ModalController,
-  ActionSheetController, ToastController
+  ActionSheetController, ToastController, IonInfiniteScroll 
 } from '@ionic/angular';
 import { ModelPage } from '../model/model.page';
 import { TodoservicioService } from '../servicios/todoservicio.service';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { LocalDBService } from '../servicios/local-db.service';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
+
+/**
+ * Página principal.
+ */
 export class HomePage {
   @ViewChild('SwipedTabsSlider') SwipedTabsSlider: IonSlides;
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   private listado = [];
   private listadoPanel = [];
@@ -38,12 +44,23 @@ export class HomePage {
     private toastCtrl: ToastController,
     private translate: TranslateService,
     private localDB: LocalDBService,
+    public keyboard: Keyboard,
     public loadingController: LoadingController) { }
 
   ngOnInit() {
   }
 
-  /* Almacena los 'likes' dados en la imágen */
+  /**
+   * Oculta el teclado nativo al pulsar enter.
+   */
+  cerrarTeclado(){
+    this.keyboard.hide();
+  }
+
+  /**
+   * Almacena los 'likes' dados en la imágen.
+   * @param id 
+   */
   meGusta(id) {
     this.localDB.getLike(id).then((val) => {
       console.log(id);
@@ -90,7 +107,10 @@ export class HomePage {
     });
   }
 
-  /* Compartir imágen por redes sociales */
+  /**
+   * Compartir imágen por redes sociales.
+   * @param item 
+   */
   async compartir(item) {
     const actionSheet = await this.sheetCtrl.create({
       header: this.translate.instant("compartir"),
@@ -143,21 +163,26 @@ export class HomePage {
     await actionSheet.present();
   }
 
-  /* Oculta o revela el botón de eliminarImagen */
+  /**
+   * Revela el botón de eliminarImagen al pulsar 10 o mas veces.
+   */
   mostrarBotonEliminar() {
     clearTimeout(this.ishackingme);
     this.ishackingmeCont++;
     if (this.ishackingmeCont > 9) {
-      // Hace visible el boton
+      // Hace visible el botón
       this.visibleBasura = true;
     } else {
-      // Si no hemos pulsado todas las veces;
+      // Si no hemos pulsado todas las veces
       this.ishackingme = setTimeout(() => { this.ishackingmeCont = 0; },
         800);
     }
   }
 
-  /* Muestra una alerta para eliminar una imágen */
+  /**
+   * Muestra una alerta para eliminar una imágen.
+   * @param id 
+   */
   async eliminarImagen(id) {
     const alert = await this.alertCtrl.create({
       header: this.translate.instant("eliminarImagen"),
@@ -183,9 +208,12 @@ export class HomePage {
     await alert.present();
   }
 
-  /* Buscador */
+  /**
+   * Buscador de imágenes.
+   * @param ev 
+   * @param refresher 
+   */
   getFilteredItem(ev: any, refresher) {
-    // set val to the value of the searchbar
     const val = ev.target.value;
 
     // Filtra por título
@@ -198,7 +226,9 @@ export class HomePage {
     }
   }
 
-  // Abre un modal para añadir una imágen
+  /**
+   * Abre un modal para añadir una imágen
+   */
   async abrirModel() {
     this.presentLoading(this.translate.instant("cargando"));
     const modal = await this.modalCtrl.create({
@@ -209,8 +239,10 @@ export class HomePage {
     await modal.present();
   }
 
-  /* Se ejecuta cuando la página ha entrado completamente 
-  y ahora es la página activa. */
+  /**
+   * Se ejecuta cuando la página ha entrado completamente y ahora es la página activa.
+   * Carga de la base de datos en la nube todas las imágenes, con sus likes.
+   */
   ionViewDidEnter() {
     this.SwipedTabsIndicator = document.getElementById("indicator");
 
@@ -224,19 +256,19 @@ export class HomePage {
         console.log(this.listado);
         this.listadoPanel = this.listado;
 
-        // Hemos terminado de cargar todas las imágenes , ahora los likes;
+        // Terminado de cargar todas las imágenes, ahora los likes
         this.todoServ.leeLikesOrdenados()
           .then((querySnapshot) => {
             querySnapshot.forEach((docu) => {
               // Busco en this.listado lo que tengan el mismo doc.id y añado countLikes
               let indexe = this.listado.find(index => index.id === docu.id);
               indexe.contLikes = docu.data().contLikes;
-              // Muestra a color el boton like
+              // Muestra a color el botón like
               if (document.getElementById(docu.id)) {
                 document.getElementById(docu.id).classList.add('megusta');
               }
             });
-            // He terminado de cargar los likes
+            // Terminado de cargar los likes
             console.log(this.listado);
             this.listadoPanel = this.listado;
             this.loadingController.dismiss();
@@ -244,7 +276,10 @@ export class HomePage {
       });
   }
 
-  /* Componente Refresher de IONIC v4. Refresca los datos */
+  /**
+   * Componente Refresher de IONIC v4. Refresca los datos.
+   * @param refresher 
+   */
   doRefresh(refresher) {
     this.todoServ.leeDatos()
       .subscribe((querySnapshot) => {
@@ -255,7 +290,7 @@ export class HomePage {
         console.log(this.listado);
         this.listadoPanel = this.listado;
 
-        // Hemos terminado de cargar todas las imágenes , ahora los likes
+        // Terminado de cargar todas las imágenes , ahora los likes
         this.todoServ.leeLikesOrdenados()
           .then((querySnapshot) => {
             querySnapshot.forEach((docu) => {
@@ -267,7 +302,7 @@ export class HomePage {
                 document.getElementById(docu.id).classList.add('megusta');
               }
             });
-            // He terminado de cargar los likes
+            // Terminado de cargar los likes
             console.log(this.listado);
             this.listadoPanel = this.listado;
             refresher.target.complete();
@@ -275,7 +310,9 @@ export class HomePage {
       });
   }
 
-  /* Se ejecuta cuando la página está a punto de entrar y convertirse en la página activa. */
+  /**
+   * Se ejecuta cuando la página está a punto de entrar y convertirse en la página activa.
+   */
   ionViewWillEnter() {
     this.category = "0";
     this.SwipedTabsSlider.length().then(l => {
@@ -283,7 +320,10 @@ export class HomePage {
     });
   }
 
-  /* Actualiza la categoría que esté en ese momento activa*/
+  /**
+   * Actualiza la categoría que esté en ese momento activa.
+   * @param cat 
+   */
   updateCat(cat: Promise<any>) {
     cat.then(dat => {
       this.category = dat;
@@ -291,7 +331,9 @@ export class HomePage {
     });
   }
 
-  /* Método que permite actualizar el indicado cuando se cambia de slide*/
+  /**
+   * Método que permite actualizar el indicado cuando se cambia de slide.
+   */
   updateIndicatorPosition() {
     this.SwipedTabsSlider.getActiveIndex().then(i => {
       if (this.ntabs > i) {  // this condition is to avoid passing to incorrect index
@@ -299,14 +341,20 @@ export class HomePage {
       }
     });
   }
-  /* Método que anima la "rayita" mientras nos estamos deslizando por el slide*/
+
+  /**
+   * Método que anima la "rayita" mientras nos estamos deslizando por el slide.
+   */
   animateIndicator(e) {
     if (this.SwipedTabsIndicator)
       this.SwipedTabsIndicator.style.webkitTransform = 'translate3d(' +
         ((e.target.swiper.progress * (this.ntabs - 1)) * 100) + '%,0,0)';
   }
 
-  /* Loading */
+  /**
+   * Loading
+   * @param msg 
+   */
   async presentLoading(msg) {
     let myloading = await this.loadingController.create({
       message: msg
@@ -314,7 +362,10 @@ export class HomePage {
     return await myloading.present();
   }
 
-  /* Mensaje informativo con "toast" */
+  /**
+   * Mensaje informativo con "toast"
+   * @param msg 
+   */
   async toastShow(msg) {
     const toast = await this.toastCtrl.create({
       message: msg,
@@ -325,4 +376,5 @@ export class HomePage {
     });
     toast.present();
   }
+
 }

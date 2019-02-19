@@ -7,7 +7,7 @@
       Oriel<span id="titulo2" (click)="mostrarBotonEliminar()">App</span>
     </ion-title>
     <ion-searchbar class="buscador" *ngIf="isSearchbarOpened" showCancelButton="true" placeholder="{{'buscar' | translate}}" 
-      (ionInput)="getFilteredItem($event, $event)" (ionCancel)="isSearchbarOpened=false"></ion-searchbar>
+      (ionInput)="getFilteredItem($event, $event)" (ionCancel)="isSearchbarOpened=false" (keyup.enter)="cerrarTeclado()"></ion-searchbar>
     <ion-buttons slot="end">
       <ion-button icon-only *ngIf="!isSearchbarOpened" (click)="isSearchbarOpened=true">
         <ion-icon name="search"></ion-icon>
@@ -27,62 +27,68 @@
 
     <!-- INICIO -->
     <ion-slide style="overflow-y:scroll">
-      <ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
-        <ion-card-content>
-          <ion-card-title text-left id="tituloCard">
-            {{item.title}}
-          </ion-card-title>
-        </ion-card-content>
-        <div class="imgAMostrar">
-          <img id="imagenAMostrar" src="{{item.img}}"/>
-        </div>
-        <ion-row>
-          <ion-col text-right>
-            <button [id]="item.id" class="buttonCard" ion-button (click)="meGusta(item.id)">
-              <ion-icon name="thumbs-up"></ion-icon>
-            </button>
-          </ion-col>
-          <ion-col text-center>
-            <button class="buttonCard" ion-button *ngIf="visibleBasura" (click)="eliminarImagen(item.id)">
-              <ion-icon name="trash"></ion-icon>
-            </button>
-          </ion-col>
-          <ion-col text-left>
-            <button class="buttonCard" ion-button (click)="compartir(item)">
-              <ion-icon name="share"></ion-icon>
-            </button>
-          </ion-col>
-        </ion-row>
-      </ion-card>
+      <ion-content class="fixed-scroll">
+        <ion-card *ngFor="let item of listadoPanel.reverse(); let i = index;" style="background-color: rgb(243, 236, 236)">
+          <ion-card-content>
+            <ion-card-title text-left id="tituloCard">
+              {{item.title}}
+            </ion-card-title>
+          </ion-card-content>
+          <div class="imgAMostrar">
+            <img id="imagenAMostrar" src="{{item.img}}"/>
+          </div>
+          <ion-row>
+            <ion-col text-right>
+              <button [id]="item.id" class="buttonCard" ion-button (click)="meGusta(item.id)">
+                <ion-icon name="thumbs-up"></ion-icon>
+              </button>
+            </ion-col>
+            <ion-col text-center>
+              <button class="buttonCard" ion-button *ngIf="visibleBasura" (click)="eliminarImagen(item.id)">
+                <ion-icon name="trash"></ion-icon>
+              </button>
+            </ion-col>
+            <ion-col text-left>
+              <button class="buttonCard" ion-button (click)="compartir(item)">
+                <ion-icon name="share"></ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-content>
     </ion-slide>
 
     <!-- FAVORITOS -->
     <ion-slide style="overflow-y:scroll">
-      <ion-card *ngFor="let item of listadoPanel; let i = index;" style="background-color: rgb(243, 236, 236)">
-        <ion-card-content>
-          <ion-card-title text-left id="tituloCard">
-            {{item.title}}
-          </ion-card-title>
-        </ion-card-content>
-        <div class="imgAMostrar">
-          <img id="imagenAMostrar" src="{{item.img}}"/>
+      <ion-content class="fixed-scroll">
+        <div *ngFor="let item of listadoPanel; let i = index;" style="margin:0px!important;padding:0px!important">
+          <ion-card *ngIf="(item.contLikes>0)" style="background-color: rgb(243, 236, 236)">
+          <ion-card-content>
+            <ion-card-title text-left id="tituloCard">
+              {{item.title}}
+            </ion-card-title>
+          </ion-card-content>
+          <div class="imgAMostrar">
+            <img id="imagenAMostrar" src="{{item.img}}"/>
+          </div>
+          <ion-row>
+            <ion-col text-right>
+              <ion-icon class="buttonCard" id="iconoLike" name="thumbs-up"></ion-icon><span id="numLikes">{{item.contLikes}}</span>
+            </ion-col>
+            <ion-col text-center>
+              <button class="buttonCard" ion-button *ngIf="visibleBasura" (click)="eliminarImagen(item.id)">
+                <ion-icon name="trash"></ion-icon>
+              </button>
+            </ion-col>
+            <ion-col text-left>
+              <button class="buttonCard" ion-button (click)="compartir(item)">
+                <ion-icon name="share"></ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
         </div>
-        <ion-row>
-          <ion-col text-right>
-            <ion-icon class="buttonCard" id="iconoLike" name="thumbs-up"></ion-icon><span id="numLikes">{{item.contLikes}}</span>
-          </ion-col>
-          <ion-col text-center>
-            <button class="buttonCard" ion-button *ngIf="visibleBasura" (click)="eliminarImagen(item.id)">
-              <ion-icon name="trash"></ion-icon>
-            </button>
-          </ion-col>
-          <ion-col text-left>
-            <button class="buttonCard" ion-button (click)="compartir(item)">
-              <ion-icon name="share"></ion-icon>
-            </button>
-          </ion-col>
-        </ion-row>
-      </ion-card>
+      </ion-content>
     </ion-slide>
   </ion-slides>
 
@@ -91,7 +97,7 @@
     <ion-fab-button mini color="tertiary" (click)="abrirModel()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  </ion-fab> 
+  </ion-fab>
 </ion-content>
 
 <ion-footer>

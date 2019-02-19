@@ -22,6 +22,7 @@
     "@angular/router": "~7.1.4",
     "@ionic-native/camera": "^5.0.0-beta.23",
     "@ionic-native/core": "^5.0.0-beta.21",
+    "@ionic-native/keyboard": "^5.1.0",
     "@ionic-native/native-storage": "^5.0.0",
     "@ionic-native/network": "^5.0.0",
     "@ionic-native/social-sharing": "^5.0.0",

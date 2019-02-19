@@ -1,3 +1,6 @@
+/**
+ * API key de Firebase.
+ */
 export const environment = {
   production: false,
   firebaseConfig : {
